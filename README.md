@@ -56,10 +56,10 @@ If the target commit SHA is not in advertised refs, the tool attempts additional
 
 ## Requirements
 
-- Go
 - Git
 - GitHub Copilot CLI installed and authenticated
-- Access to `github.com/github/copilot-sdk/go`
+
+Go is not required to run retrospec if you use a prebuilt binary.
 
 Optional model override:
 
@@ -68,7 +68,17 @@ Optional model override:
 
 Default model is `gpt-5.3-codex`.
 
-## Install / Build
+## Install
+
+Download a prebuilt binary from Releases:
+
+- https://github.com/igolaizola/retrospec/releases
+
+Then place `retrospec` in your `PATH` (or run it directly from the download location).
+
+## Build From Source (Optional)
+
+If you prefer building locally, you need Go and access to `github.com/github/copilot-sdk/go`.
 
 ```bash
 go build ./cmd/retrospec
