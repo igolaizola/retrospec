@@ -247,7 +247,11 @@ func (m *Manager) RunCoder(ctx context.Context, workingDir, candidatePrompt stri
 	if err != nil {
 		return CoderResult{}, fmt.Errorf("create coder session: %w", err)
 	}
-	defer session.Destroy()
+	defer func() {
+		if err := session.Destroy(); err != nil && m.verbose {
+			fmt.Printf("warning: failed to destroy coder session: %v\n", err)
+		}
+	}()
 
 	if m.verbose {
 		session.On(func(event sdk.SessionEvent) {

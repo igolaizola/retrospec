@@ -11,11 +11,11 @@ import (
 	"strings"
 	"time"
 
+	sdk "github.com/github/copilot-sdk/go"
 	"github.com/igolaizola/retrospec/internal/copilot"
 	"github.com/igolaizola/retrospec/internal/feedback"
 	"github.com/igolaizola/retrospec/internal/git"
 	"github.com/igolaizola/retrospec/internal/scoring"
-	sdk "github.com/github/copilot-sdk/go"
 )
 
 var trackerRefCleanupRe = regexp.MustCompile(`(?i)(?:^|\s)(?:#\d+|(?:issue|issues|pr|pull request|pull requests)\s*#?\d+)\b`) //nolint:lll
@@ -143,7 +143,11 @@ func (r *Runner) Execute(ctx context.Context) (Result, error) {
 	if err != nil {
 		return Result{}, err
 	}
-	defer specSession.Destroy()
+	defer func() {
+		if err := specSession.Destroy(); err != nil && r.cfg.Verbose {
+			fmt.Printf("warning: failed to destroy spec session: %v\n", err)
+		}
+	}()
 
 	initialPacket := feedback.BuildInitialPacket(0, target, commitInfo.CommitMessage, r.cfg.MaxPathRefs)
 	feedbackText := feedback.PacketText(initialPacket)
